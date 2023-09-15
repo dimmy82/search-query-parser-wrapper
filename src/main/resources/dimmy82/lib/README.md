@@ -1,0 +1,1 @@
+Download Rust library from https://github.com/dimmy82/search-query-parser-cdylib/blob/master/bin

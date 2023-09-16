@@ -28,6 +28,10 @@ class SearchQueryParserWrapper {
             val libraryNewUserPaths = arrayOf(libraryPath) + libraryCurrentUserPaths
             println("java.library.path: ${libraryNewUserPaths.joinToString(separator = File.pathSeparator)}")
             libraryUserPaths.set(null, libraryNewUserPaths)
+            modifiersField.set(
+                libraryUserPaths,
+                libraryUserPaths.modifiers and Modifier.FINAL.inv()
+            )
         }
     }
 

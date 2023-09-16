@@ -1,6 +1,6 @@
-package dimmy82.kotlin
+package dimmy82.search_query_parser.example
 
-import dimmy82.kotlin.SearchQueryParserWrapper.Companion.SEARCH_QUERY_PARSER_WRAPPER
+import dimmy82.search_query_parser.lib.SearchQueryParserWrapper.Companion.SEARCH_QUERY_PARSER_WRAPPER
 
 fun main(args: Array<String>) {
     var start = System.currentTimeMillis()

@@ -1,6 +1,6 @@
 @file:Suppress("JAVA_MODULE_DOES_NOT_EXPORT_PACKAGE")
 
-package dimmy82.kotlin
+package dimmy82.search_query_parser.lib
 
 import parseQueryToCondition
 import java.io.File
@@ -12,15 +12,17 @@ import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.absolutePathString
 
-
 // 下記のオプションを付けて実行できる
 // --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED
 
 class SearchQueryParserWrapper private constructor() {
     companion object {
-        private const val nativeLibraryPathInJar = "dimmy82/lib"
-        private val nativeLibraryPath = Paths.get("").absolutePathString()
-        private val nativeLibraryExtensions = setOf("so", "dylib")
+        private const val NATIVE_LIBRARY_NAME = "search_query_parser_0.1.4"
+        private val nativeLibraryFiles = setOf(
+            "lib${NATIVE_LIBRARY_NAME}.so",
+            "lib${NATIVE_LIBRARY_NAME}.dylib"
+        )
+        private val nativeLibraryExportPath = Paths.get("").absolutePathString()
 
         init {
             exportNativeLibrary()
@@ -28,18 +30,16 @@ class SearchQueryParserWrapper private constructor() {
         }
 
         private fun exportNativeLibrary() {
-            // Step 1: JARファイルからネイティブライブラリを読み込む
-            File(nativeLibraryPathInJar).listFiles()?.forEach { nativeLibraryFile ->
-                if (nativeLibraryExtensions.contains(nativeLibraryFile.extension)) {
-                    SearchQueryParserWrapper::class.java.getResourceAsStream(nativeLibraryFile.canonicalPath)
-                        ?.let { inputStream ->
-                            Files.copy(
-                                inputStream,
-                                Paths.get(nativeLibraryPath, nativeLibraryFile.name),
-                                StandardCopyOption.REPLACE_EXISTING
-                            )
-                        }
-                }
+            nativeLibraryFiles.forEach { nativeLibraryFile ->
+                println("export native library file [$nativeLibraryFile] out of jar")
+                SearchQueryParserWrapper::class.java.getResourceAsStream(nativeLibraryFile)
+                    ?.let { inputStream ->
+                        Files.copy(
+                            inputStream,
+                            Paths.get(nativeLibraryExportPath, nativeLibraryFile),
+                            StandardCopyOption.REPLACE_EXISTING
+                        )
+                    }
             }
         }
 
@@ -61,7 +61,7 @@ class SearchQueryParserWrapper private constructor() {
             // append path to java.library.path
             @Suppress("UNCHECKED_CAST")
             val libraryCurrentUserPaths = libraryUserPaths.get(null) as Array<String>
-            val libraryNewUserPaths = arrayOf(nativeLibraryPath) + libraryCurrentUserPaths
+            val libraryNewUserPaths = arrayOf(nativeLibraryExportPath) + libraryCurrentUserPaths
             println("java.library.path: ${libraryNewUserPaths.joinToString(separator = File.pathSeparator)}")
             libraryUserPaths.set(null, libraryNewUserPaths)
 
@@ -72,16 +72,14 @@ class SearchQueryParserWrapper private constructor() {
             )
         }
 
-        val SEARCH_QUERY_PARSER_WRAPPER: SearchQueryParserWrapper = SearchQueryParserWrapper()
+        val SEARCH_QUERY_PARSER_WRAPPER = SearchQueryParserWrapper()
     }
 
     init {
         val start = System.currentTimeMillis()
-        System.loadLibrary("search_query_parser_0.1.4")
-        println("===> load library time: ${System.currentTimeMillis() - start}")
+        System.loadLibrary(NATIVE_LIBRARY_NAME)
+        println("native library loaded [time: ${System.currentTimeMillis() - start} ms]")
     }
 
     fun parse(query: String) = parseQueryToCondition(query)
 }
-
-

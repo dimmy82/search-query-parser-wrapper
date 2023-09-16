@@ -75,7 +75,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>dimmy82.kotlin.SearchQueryParserWrapperKt</mainClass>
+              <mainClass>dimmy82.search_query_parser.example.MainKt</mainClass>
             </manifest>
           </archive>
         </configuration>

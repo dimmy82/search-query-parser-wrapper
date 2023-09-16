@@ -72,7 +72,7 @@ class SearchQueryParserWrapper private constructor() {
             )
         }
 
-        val SEARCH_QUERY_PARSER_WRAPPER = SearchQueryParserWrapper()
+        val SEARCH_QUERY_PARSER = SearchQueryParserWrapper()
     }
 
     init {

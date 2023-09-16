@@ -26,5 +26,5 @@ replay_pid*
 .idea
 **/target
 
-**/lib/*.so
-**/lib/*.dylib
+**/*.so
+**/*.dylib

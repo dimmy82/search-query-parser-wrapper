@@ -1,11 +1,43 @@
 package dimmy82.search_query_parser.domain
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import dimmy82.search_query_parser.domain.condition.NoneCondition
+import com.fasterxml.jackson.databind.MapperFeature
+import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
+import com.fasterxml.jackson.module.kotlin.readValue
+import dimmy82.search_query_parser.domain.condition.*
 
 interface ICondition {
     companion object {
-        internal fun parseConditionFromJson(conditionJson: String): ICondition {
+        private val JACKSON_MAPPER =
+            jacksonMapperBuilder().configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false).build()
+
+        internal fun parseConditionFromJsonString(conditionJsonString: String) =
+            JACKSON_MAPPER.readValue<ConditionJson>(conditionJsonString).let(::parseConditionFromJson)
+
+        private fun parseConditionFromJson(conditionJson: ConditionJson): ICondition {
+            // KeywordCondition
+            conditionJson.keyword?.let { return KeywordCondition(it) }
+
+            // PhraseKeywordCondition
+            conditionJson.phraseKeyword?.let { return PhraseKeywordCondition(it) }
+
+            // NotCondition
+            conditionJson.not?.let { return NotCondition(parseConditionFromJson(it)) }
+
+            // AndCondition
+            conditionJson.and?.let { conditions ->
+                return OperatorCondition(
+                    Operator.And,
+                    conditions.map { parseConditionFromJson(it) })
+            }
+
+            // OrCondition
+            conditionJson.or?.let { conditions ->
+                return OperatorCondition(
+                    Operator.Or,
+                    conditions.map { parseConditionFromJson(it) })
+            }
+
             return NoneCondition()
         }
     }
@@ -20,6 +52,4 @@ private data class ConditionJson(
     val or: List<ConditionJson>?,
 ) {
     private constructor() : this(null, null, null, null, null)
-
-    fun isEmpty() = listOfNotNull(keyword, phraseKeyword, not, and, or).isEmpty()
 }

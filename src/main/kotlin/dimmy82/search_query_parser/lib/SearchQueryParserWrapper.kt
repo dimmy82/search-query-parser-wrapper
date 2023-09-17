@@ -13,7 +13,7 @@ import java.nio.file.StandardCopyOption
 import kotlin.io.path.absolutePathString
 import parseQueryToCondition as parseQueryToConditionJson
 
-// 下記のオプションを付けて実行できる
+// append these jvm options for execution
 // --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED
 
 class SearchQueryParserWrapper private constructor() {
@@ -83,5 +83,8 @@ class SearchQueryParserWrapper private constructor() {
     }
 
     fun parseQueryToCondition(query: String) =
-        parseQueryToConditionJson(query).let { ICondition.parseConditionFromJson(it) }
+        parseQueryToConditionJsonString(query).let { ICondition.parseConditionFromJsonString(it) }
+
+    internal fun parseQueryToConditionJsonString(query: String) =
+        parseQueryToConditionJson(query)
 }

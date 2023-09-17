@@ -2,7 +2,7 @@
 
 package dimmy82.search_query_parser.lib
 
-import parseQueryToCondition
+import dimmy82.search_query_parser.domain.ICondition
 import java.io.File
 import java.lang.invoke.MethodHandles
 import java.lang.reflect.Field
@@ -11,6 +11,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.absolutePathString
+import parseQueryToCondition as parseQueryToConditionJson
 
 // 下記のオプションを付けて実行できる
 // --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED
@@ -81,5 +82,6 @@ class SearchQueryParserWrapper private constructor() {
         println("native library loaded [time: ${System.currentTimeMillis() - start} ms]")
     }
 
-    fun parse(query: String) = parseQueryToCondition(query)
+    fun parseQueryToCondition(query: String) =
+        parseQueryToConditionJson(query).let { ICondition.parseConditionFromJson(it) }
 }

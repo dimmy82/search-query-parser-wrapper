@@ -11,6 +11,7 @@ class IConditionTest {
         val conditionJsonString = SEARCH_QUERY_PARSER.parseQueryToConditionJsonString("")
         val condition = ICondition.parseConditionFromJsonString(conditionJsonString)
         assertEquals(NoneCondition(), condition)
+        println("===================\n$condition")
     }
 
     @Test
@@ -18,6 +19,7 @@ class IConditionTest {
         val conditionJsonString = SEARCH_QUERY_PARSER.parseQueryToConditionJsonString("keyword")
         val condition = ICondition.parseConditionFromJsonString(conditionJsonString)
         assertEquals(KeywordCondition("keyword"), condition)
+        println("===================\n$condition")
     }
 
     @Test
@@ -25,6 +27,7 @@ class IConditionTest {
         val conditionJsonString = SEARCH_QUERY_PARSER.parseQueryToConditionJsonString("\"phrase keyword\"")
         val condition = ICondition.parseConditionFromJsonString(conditionJsonString)
         assertEquals(PhraseKeywordCondition("phrase keyword"), condition)
+        println("===================\n$condition")
     }
 
     @Test
@@ -32,6 +35,7 @@ class IConditionTest {
         val conditionJsonString = SEARCH_QUERY_PARSER.parseQueryToConditionJsonString("-keyword")
         val condition = ICondition.parseConditionFromJsonString(conditionJsonString)
         assertEquals(NotCondition(KeywordCondition("keyword")), condition)
+        println("===================\n$condition")
     }
 
     @Test
@@ -39,6 +43,7 @@ class IConditionTest {
         val conditionJsonString = SEARCH_QUERY_PARSER.parseQueryToConditionJsonString("-\"phrase keyword\"")
         val condition = ICondition.parseConditionFromJsonString(conditionJsonString)
         assertEquals(NotCondition(PhraseKeywordCondition("phrase keyword")), condition)
+        println("===================\n$condition")
     }
 
     @Test
@@ -51,6 +56,7 @@ class IConditionTest {
                 listOf(KeywordCondition("keyword"), PhraseKeywordCondition("phrase keyword"))
             ), condition
         )
+        println("===================\n$condition")
     }
 
     @Test
@@ -63,6 +69,7 @@ class IConditionTest {
                 listOf(PhraseKeywordCondition("phrase keyword"), KeywordCondition("keyword"))
             ), condition
         )
+        println("===================\n$condition")
     }
 
     @Test
@@ -75,6 +82,7 @@ class IConditionTest {
                 listOf(KeywordCondition("keyword"), PhraseKeywordCondition("phrase keyword"))
             ), condition
         )
+        println("===================\n$condition")
     }
 
     @Test
@@ -94,6 +102,7 @@ class IConditionTest {
                 )
             ), condition
         )
+        println("===================\n$condition")
     }
 
     @Test
@@ -113,6 +122,7 @@ class IConditionTest {
                 )
             ), condition
         )
+        println("===================\n$condition")
     }
 
     @Test
@@ -134,6 +144,7 @@ class IConditionTest {
                 )
             ), condition
         )
+        println("===================\n$condition")
     }
 
     @Test
@@ -158,5 +169,6 @@ class IConditionTest {
                 )
             ), condition
         )
+        println("===================\n$condition")
     }
 }

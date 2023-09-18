@@ -41,6 +41,8 @@ interface ICondition {
             return NoneCondition()
         }
     }
+
+    fun toString(intent: Int = 0): String
 }
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

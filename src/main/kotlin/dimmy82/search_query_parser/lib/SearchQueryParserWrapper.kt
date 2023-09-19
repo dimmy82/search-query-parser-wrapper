@@ -10,6 +10,8 @@ import java.lang.reflect.Modifier
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import java.util.logging.Level
+import java.util.logging.Logger
 import kotlin.io.path.absolutePathString
 import parseQueryToCondition as parseQueryToConditionJson
 
@@ -18,6 +20,7 @@ import parseQueryToCondition as parseQueryToConditionJson
 
 class SearchQueryParserWrapper private constructor() {
     companion object {
+        private val logger = Logger.getLogger("SearchQueryParser")
         private const val NATIVE_LIBRARY_NAME = "search_query_parser_0.1.4"
         private val nativeLibraryFiles = setOf(
             "lib${NATIVE_LIBRARY_NAME}.so",
@@ -32,7 +35,7 @@ class SearchQueryParserWrapper private constructor() {
 
         private fun exportNativeLibrary() {
             nativeLibraryFiles.forEach { nativeLibraryFile ->
-                println("export native library file [$nativeLibraryFile] out of jar")
+                logger.info("initialize => export native library file [$nativeLibraryFile] out of jar")
                 SearchQueryParserWrapper::class.java.getResourceAsStream(nativeLibraryFile)
                     ?.let { inputStream ->
                         Files.copy(
@@ -63,7 +66,10 @@ class SearchQueryParserWrapper private constructor() {
             @Suppress("UNCHECKED_CAST")
             val libraryCurrentUserPaths = libraryUserPaths.get(null) as Array<String>
             val libraryNewUserPaths = arrayOf(nativeLibraryExportPath) + libraryCurrentUserPaths
-            println("java.library.path: ${libraryNewUserPaths.joinToString(separator = File.pathSeparator)}")
+            logger.log(
+                Level.CONFIG,
+                "initialize => java.library.path: ${libraryNewUserPaths.joinToString(separator = File.pathSeparator)}"
+            )
             libraryUserPaths.set(null, libraryNewUserPaths)
 
             // set final back to NativeLibraries$LibraryPaths.USER_PATHS
@@ -79,11 +85,15 @@ class SearchQueryParserWrapper private constructor() {
     init {
         val start = System.currentTimeMillis()
         System.loadLibrary(NATIVE_LIBRARY_NAME)
-        println("native library loaded [time: ${System.currentTimeMillis() - start} ms]")
+        logger.info("initialize => native library loaded [time: ${System.currentTimeMillis() - start} ms]")
     }
 
-    fun parseQueryToCondition(query: String) =
-        parseQueryToConditionJsonString(query).let { ICondition.parseConditionFromJsonString(it) }
+    fun parseQueryToCondition(query: String): ICondition {
+        val start = System.currentTimeMillis()
+        val condition = parseQueryToConditionJsonString(query).let { ICondition.parseConditionFromJsonString(it) }
+        logger.info("parse \"$query\" => \n$condition\n[time: ${System.currentTimeMillis() - start} ms]")
+        return condition
+    }
 
     internal fun parseQueryToConditionJsonString(query: String) =
         parseQueryToConditionJson(query)

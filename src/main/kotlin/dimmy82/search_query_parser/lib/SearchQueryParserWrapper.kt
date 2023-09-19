@@ -95,6 +95,5 @@ class SearchQueryParserWrapper private constructor() {
         return condition
     }
 
-    internal fun parseQueryToConditionJsonString(query: String) =
-        parseQueryToConditionJson(query)
+    internal fun parseQueryToConditionJsonString(query: String) = parseQueryToConditionJson(query)
 }

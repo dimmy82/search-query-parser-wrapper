@@ -8,11 +8,11 @@ import dimmy82.search_query_parser.domain.condition.*
 
 interface ICondition {
     companion object {
-        private val JACKSON_MAPPER =
+        private val jsonMapper =
             jacksonMapperBuilder().configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false).build()
 
         internal fun parseConditionFromJsonString(conditionJsonString: String) =
-            JACKSON_MAPPER.readValue<ConditionJson>(conditionJsonString).let(::parseConditionFromJson)
+            jsonMapper.readValue<ConditionJson>(conditionJsonString).let(::parseConditionFromJson)
 
         private fun parseConditionFromJson(conditionJson: ConditionJson): ICondition {
             // KeywordCondition

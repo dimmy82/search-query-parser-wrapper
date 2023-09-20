@@ -6,7 +6,44 @@
   <packaging>jar</packaging>
   <version>0.1.4</version>
   <name>search-query-parser</name>
-  <url>http://maven.apache.org</url>
+  <url>https://github.com/dimmy82</url>
+  <description>
+    search-query-parser is made to parse complex search query into layered search conditions,
+    so it will be easy to construct Elasticsearch query DSL or something else.
+    this is a wrapper of the Rust library (https://crates.io/crates/search-query-parser).
+    Requirement:
+    - Java 17
+    - Linux or Mac(arm64)
+  </description>
+
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>https://github.com/dimmy82/search-query-parser-wrapper/blob/main/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>dimmy82</id>
+      <name>dimmy cheng</name>
+      <email>dimmycheng82@gmail.com</email>
+      <organization>Uzabase Inc.</organization>
+      <organizationUrl>https://www.uzabase.com/</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+9</timezone>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:dimmy82/search-query-parser-wrapper.git</connection>
+    <developerConnection>scm:git:git@github.com:dimmy82/search-query-parser-wrapper.git</developerConnection>
+    <url>https://github.com/dimmy82/search-query-parser-wrapper</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
     <kotlin.version>1.9.10</kotlin.version>
@@ -159,7 +196,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
+        <version>1.6.13</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>ossrh</serverId>
@@ -170,7 +207,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.5</version>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <id>sign-artifacts</id>

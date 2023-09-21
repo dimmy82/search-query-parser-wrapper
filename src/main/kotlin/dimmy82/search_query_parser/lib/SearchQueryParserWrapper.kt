@@ -91,7 +91,14 @@ class SearchQueryParserWrapper private constructor() {
     fun parseQueryToCondition(query: String): ICondition {
         val start = System.currentTimeMillis()
         val condition = parseQueryToConditionJsonString(query).let { ICondition.parseConditionFromJsonString(it) }
-        logger.info("parse \"$query\" => \n$condition\n[time: ${System.currentTimeMillis() - start} ms]")
+        logger.info(
+            "parse \"$query\" => \n${
+                condition.toString(
+                    "> ",
+                    0
+                )
+            }\n> [time: ${System.currentTimeMillis() - start} ms]"
+        )
         return condition
     }
 

@@ -7,7 +7,7 @@ class NoneCondition : ICondition {
 
     override fun equals(other: Any?) = other?.let { return it is NoneCondition } ?: false
 
-    override fun toString() = toString(0)
+    override fun toString() = toString("", 0)
 
-    override fun toString(intent: Int) = "${"  ".repeat(intent)}none"
+    override fun toString(prefix: String, intent: Int): String = "${prefix}${"  ".repeat(intent)}none"
 }

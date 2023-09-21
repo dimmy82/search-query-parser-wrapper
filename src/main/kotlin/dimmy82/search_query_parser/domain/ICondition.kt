@@ -42,7 +42,7 @@ interface ICondition {
         }
     }
 
-    fun toString(intent: Int = 0): String
+    fun toString(prefix: String, intent: Int): String
 }
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

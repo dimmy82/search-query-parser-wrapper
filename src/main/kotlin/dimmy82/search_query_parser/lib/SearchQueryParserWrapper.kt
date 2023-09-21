@@ -18,6 +18,14 @@ import parseQueryToCondition as parseQueryToConditionJson
 // append these jvm options for execution
 // --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED
 
+/**
+ * search-query-parser is made to parse complex search query into layered search conditions,
+ * so it will be easy to construct Elasticsearch query DSL or something else.
+ * this is a wrapper of the Rust library (https://crates.io/crates/search-query-parser).
+ * Requirement:
+ * - Java 17
+ * - Linux or Mac(arm64)
+ */
 class SearchQueryParserWrapper private constructor() {
     companion object {
         private val logger = Logger.getLogger("SearchQueryParser")

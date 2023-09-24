@@ -12,7 +12,6 @@ import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.util.logging.Level
 import java.util.logging.Logger
-import kotlin.io.path.absolutePathString
 import parseQueryToCondition as parseQueryToConditionJson
 
 // append these jvm options for execution
@@ -34,28 +33,62 @@ class SearchQueryParserWrapper private constructor() {
             "lib${NATIVE_LIBRARY_NAME}.so",
             "lib${NATIVE_LIBRARY_NAME}.dylib"
         )
-        private val nativeLibraryExportPath = Paths.get("").absolutePathString()
 
         init {
-            exportNativeLibrary()
-            prepareForLoadNativeLibrary()
+            val nativeLibraryPath = exportNativeLibrary()
+            prepareForLoadNativeLibrary(nativeLibraryPath)
         }
 
-        private fun exportNativeLibrary() {
+        private fun exportNativeLibrary(): String {
+            val osArch = osArch()
+            val nativeLibraryPath = nativeLibraryExportPath()
             nativeLibraryFiles.forEach { nativeLibraryFile ->
-                logger.info("initialize => export native library file [$nativeLibraryFile] out of jar")
-                SearchQueryParserWrapper::class.java.getResourceAsStream(nativeLibraryFile)
+                val nativeLibraryFilePath = "$osArch${File.separator}$nativeLibraryFile"
+                logger.info("initialize => export native library file [$nativeLibraryFilePath] out of jar")
+                SearchQueryParserWrapper::class.java.getResourceAsStream(nativeLibraryFilePath)
                     ?.let { inputStream ->
                         Files.copy(
                             inputStream,
-                            Paths.get(nativeLibraryExportPath, nativeLibraryFile),
+                            Paths.get(nativeLibraryPath, nativeLibraryFile),
                             StandardCopyOption.REPLACE_EXISTING
                         )
                     }
             }
+            return nativeLibraryPath
         }
 
-        private fun prepareForLoadNativeLibrary() {
+        private fun osArch() =
+            System.getProperty("os.arch")?.let {
+                if (setOf("aarch64", "arm64").contains(it)) {
+                    "arm64"
+                } else {
+                    "x86_64"
+                }
+            } ?: "x86_64"
+
+        private fun nativeLibraryExportPath(): String {
+            val m2Repository = Paths.get(
+                System.getProperty("user.home"),
+                ".m2",
+                "repository",
+                "io",
+                "github",
+                "dimmy82",
+                "search-query-parser",
+                "0.1.4"
+            ).toFile()
+            val nativeLibrary = if (m2Repository.isDirectory) {
+                Paths.get(m2Repository.absolutePath, "native-library")
+            } else {
+                Paths.get("", "native-library")
+            }
+            if (!nativeLibrary.toFile().isDirectory) {
+                Files.createDirectory(nativeLibrary)
+            }
+            return nativeLibrary.toFile().absolutePath
+        }
+
+        private fun prepareForLoadNativeLibrary(nativeLibraryPath: String) {
             // field modifier
             val lookup = MethodHandles.privateLookupIn(Field::class.java, MethodHandles.lookup())
             val modifiersField = lookup.findVarHandle(Field::class.java, "modifiers", Int::class.javaPrimitiveType)
@@ -73,7 +106,7 @@ class SearchQueryParserWrapper private constructor() {
             // append path to java.library.path
             @Suppress("UNCHECKED_CAST")
             val libraryCurrentUserPaths = libraryUserPaths.get(null) as Array<String>
-            val libraryNewUserPaths = arrayOf(nativeLibraryExportPath) + libraryCurrentUserPaths
+            val libraryNewUserPaths = arrayOf(nativeLibraryPath) + libraryCurrentUserPaths
             logger.log(
                 Level.CONFIG,
                 "initialize => java.library.path: ${libraryNewUserPaths.joinToString(separator = File.pathSeparator)}"
@@ -100,7 +133,7 @@ class SearchQueryParserWrapper private constructor() {
         val start = System.currentTimeMillis()
         val condition = parseQueryToConditionJsonString(query).let { ICondition.parseConditionFromJsonString(it) }
         logger.info(
-            "parse \"$query\" => \n${
+            "parse 「$query」 => \n${
                 condition.toString(
                     "> ",
                     0

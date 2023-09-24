@@ -7,6 +7,6 @@ import dimmy82.search_query_parser.lib.SearchQueryParserWrapper.Companion.SEARCH
  */
 fun main(args: Array<String>) {
     SEARCH_QUERY_PARSER.parseQueryToCondition("A and B")
-    SEARCH_QUERY_PARSER.parseQueryToCondition("A or B")
+    SEARCH_QUERY_PARSER.parseQueryToCondition("\"A a\" or B")
     SEARCH_QUERY_PARSER.parseQueryToCondition("A and -B")
 }

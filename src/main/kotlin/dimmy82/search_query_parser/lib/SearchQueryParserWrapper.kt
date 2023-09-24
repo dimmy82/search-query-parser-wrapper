@@ -75,7 +75,7 @@ class SearchQueryParserWrapper private constructor() {
                 "github",
                 "dimmy82",
                 "search-query-parser",
-                "0.1.4"
+                "1.1.41"
             ).toFile()
             val nativeLibrary = if (m2Repository.isDirectory) {
                 Paths.get(m2Repository.absolutePath, "native-library")

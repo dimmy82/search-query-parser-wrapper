@@ -4,7 +4,7 @@
   <groupId>io.github.dimmy82</groupId>
   <artifactId>search-query-parser</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.41</version>
+  <version>1.1.42</version>
   <name>search-query-parser</name>
   <url>https://github.com/dimmy82</url>
   <description>
@@ -47,7 +47,7 @@
 
   <properties>
     <kotlin.version>1.9.10</kotlin.version>
-    <jackson.version>2.15.1</jackson.version>
+    <jackson.version>2.15.2</jackson.version>
     <junit.version>5.10.0</junit.version>
     <mockk.version>1.13.5</mockk.version>
   </properties>

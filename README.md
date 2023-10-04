@@ -2,7 +2,7 @@
 
 ## what is this library do
 
-call Rust library (search-query-parser) via JNI
+call Rust library ([search-query-parser](https://crates.io/crates/search-query-parser)) via JNI to parse complex search query into layered search conditions, so it will be easy to construct Elasticsearch query DSL or something else.
 
 ## support & requirement
 

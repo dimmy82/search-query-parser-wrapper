@@ -21,3 +21,28 @@ add this to pom.xml
   <version>1.1.42</version>
 </dependency>
 ```
+
+use `SearchQueryParserWrapper.SEARCH_QUERY_PARSER.parseQueryToCondition` to parse query
+
+```kotlin
+val condition = SearchQueryParserWrapper.SEARCH_QUERY_PARSER.parseQueryToCondition(
+    "-(keyword or \"phrase keyword\") and (\"phrase keyword 2\" or keyword2)")
+
+assertEquals(
+    OperatorCondition(
+        Operator.And,
+        listOf(
+            NotCondition(
+                OperatorCondition(
+                    Operator.Or,
+                    listOf(KeywordCondition("keyword"), PhraseKeywordCondition("phrase keyword"))
+                )
+            ),
+            OperatorCondition(
+                Operator.Or,
+                listOf(PhraseKeywordCondition("phrase keyword 2"), KeywordCondition("keyword2"))
+            ),
+        )
+    ), condition
+)
+```
